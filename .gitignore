@@ -1,0 +1,6 @@
+backend/*/__pycache__/
+myvenv/
+*.pyc
+*.pyo
+media/
+*.log
