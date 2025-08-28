@@ -10,16 +10,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         validators=[validate_password],
         style={'input_type': 'password'}
     )
-    password_confirm = serializers.CharField(
-        write_only=True,
-        style={'input_type': 'password'}
-    )
     
     class Meta:
         model = User
         fields = [
             'username', 'full_name', 'email', 'contact', 'company', 
-            'address', 'industry', 'password', 'password_confirm'
+            'address', 'industry', 'password'
         ]
         extra_kwargs = {
             'username': {'required': True},
@@ -43,15 +39,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("A user with this contact number already exists.")
         return value
     
-    def validate(self, attrs):
-        """Validate password confirmation"""
-        if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError("Password confirmation does not match.")
-        return attrs
-    
     def create(self, validated_data):
         """Create new user"""
-        validated_data.pop('password_confirm')
         password = validated_data.pop('password')
         
         user = User.objects.create_user(
